@@ -9,18 +9,26 @@ from dataclasses import dataclass
 
 
 class Rive(Enum):
+    """Objet modélisant un côté de la rivière."""
+
     GAUCHE = "gauche"
     DROITE = "droite"
 
 
 @dataclass
 class Etat:
+    """Objet modélisant l'état du système. Chaque personnage étant d'un côté de la rivière.
+
+    Pas de vérification de validité à ce stade.
+    """
+
     berger: Rive
     loup: Rive
     mouton: Rive
     choux: Rive
 
     def __str__(self) -> str:
+        """Encode un état avec une chaine de caractéres."""
         gauche = list()
         droite = list()
         if self.berger == Rive.GAUCHE:
@@ -42,7 +50,12 @@ class Etat:
         return "".join(gauche) + "|" + "".join(droite)
 
     @staticmethod
-    def etat_from_str(chaine: str) -> "Etat":
+    def from_str(chaine: str) -> "Etat":
+        """Convertit une chaine de caractères en état.
+
+        Une chaine valide contient B L M C | exactement une fois.
+        La position de BLMC par rapport à | encode la vide du personnage correspondant.
+        """
         if sorted(chaine) != list("BCLM|"):
             raise ValueError("chaine invalide")
         indice_barre = chaine.find("|")
@@ -65,17 +78,20 @@ class Etat:
         return Etat(berger=berger, loup=loup, mouton=mouton, choux=choux)
 
 
+# DEPART représente l'état ou tout le monde est à gauche
 DEPART = Etat(
     berger=Rive.GAUCHE, loup=Rive.GAUCHE, mouton=Rive.GAUCHE, choux=Rive.GAUCHE
 )
 
 
+# ARRIVEE représente l'état ou tout le monde est à droite
 ARRIVEE = Etat(
     berger=Rive.DROITE, loup=Rive.DROITE, mouton=Rive.DROITE, choux=Rive.DROITE
 )
 
 
 def est_valide(etat: Etat) -> bool:
+    """Teste si l'état respecte les contraintes sur les personnages."""
     if etat.loup == etat.mouton and etat.berger != etat.loup:
         return False
     if etat.mouton == etat.choux and etat.berger != etat.mouton:
@@ -84,6 +100,7 @@ def est_valide(etat: Etat) -> bool:
 
 
 def genere_sommets() -> list[Etat]:
+    """Renvoie la liste des etats valides."""
     etats = []
     for berger in Rive:
         for loup in Rive:
@@ -101,6 +118,7 @@ def genere_sommets() -> list[Etat]:
 
 
 def sont_connectes(depart: Etat, arrivee: Etat) -> bool:
+    """Teste si on peut passer de depart à arrivee en une seule traversée de rivière."""
     if depart.berger == arrivee.berger:
         return False
     nombre_changements = 0
@@ -123,6 +141,7 @@ def sont_connectes(depart: Etat, arrivee: Etat) -> bool:
 
 
 def genere_arretes() -> list[tuple[Etat, Etat]]:
+    """Génère toutes les arrêtes du graphe."""
     resultat = []
     for depart in genere_sommets():
         for arrivee in genere_sommets():
