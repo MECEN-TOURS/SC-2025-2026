@@ -295,8 +295,68 @@ def _(mo):
 
 
 @app.cell
-def _(Etat):
-    def etat_from_str(chaine: str) -> Etat: ...
+def _(Etat, Rive):
+    def etat_from_str(chaine: str) -> Etat:
+        if sorted(chaine) != list("BCLM|"):
+            raise ValueError("chaine invalide")
+        indice_barre = chaine.find("|")
+        if chaine.find("B") < indice_barre:
+            berger = Rive.GAUCHE
+        else:
+            berger = Rive.DROITE
+        if chaine.find("L") < indice_barre:
+            loup = Rive.GAUCHE
+        else:
+            loup = Rive.DROITE
+        if chaine.find("M") < indice_barre:
+            mouton = Rive.GAUCHE
+        else:
+            mouton = Rive.DROITE
+        if chaine.find("C") < indice_barre:
+            choux = Rive.GAUCHE
+        else:
+            choux = Rive.DROITE
+        return Etat(berger=berger, loup=loup, mouton=mouton, choux=choux)
+    return (etat_from_str,)
+
+
+@app.cell
+def _(DEPART, etat_from_str, visualiser):
+    assert DEPART == etat_from_str(visualiser(DEPART))
+    return
+
+
+@app.cell
+def _(etat_from_str, genere_etats, visualiser):
+    assert all(_etat == etat_from_str(visualiser(_etat)) for _etat in genere_etats())
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    **EXERCICE.** est-ce que `visualiser` composer avec `etat_from_str` vérifie la même chose?
+    """)
+    return
+
+
+@app.cell
+def _(etat_from_str, visualiser):
+    visualiser(etat_from_str("CMLB|"))
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    **EXERCICE.** Réfléchir à un algorithme permettant de décider s'il existe un chemin reliant deux sommets dans un graphe.
+    On pourra réfléchir en terme de parcours dans un labyrinthe.
+    """)
+    return
+
+
+@app.cell
+def _():
     return
 
 
