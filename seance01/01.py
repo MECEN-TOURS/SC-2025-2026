@@ -172,7 +172,49 @@ def _(mo):
 
 @app.cell
 def _(Etat):
-    def sont_connectes(depart: Etat, arrivee: Etat) -> bool: ...
+    def sont_connectes(depart: Etat, arrivee: Etat) -> bool: 
+        if depart.berger == arrivee.berger:
+            return False
+        nombre_changements = 0
+        if depart.loup != arrivee.loup:
+            if depart.loup != depart.berger:
+                return False 
+            else:
+                nombre_changements = nombre_changements + 1
+        if depart.mouton != arrivee.mouton:
+            if depart.mouton != depart.berger:
+                return False 
+            else:
+                nombre_changements = nombre_changements + 1
+        if depart.choux != arrivee.choux:
+            if depart.choux != depart.berger:
+                return False 
+            else:
+                nombre_changements = nombre_changements + 1
+        return (nombre_changements < 2)
+    return (sont_connectes,)
+
+
+@app.cell
+def _(Etat, genere_sommets, sont_connectes):
+    def genere_arretes() -> list[tuple[Etat, Etat]]:
+        resultat = []
+        for depart in genere_sommets():
+            for arrivee in genere_sommets():
+                if sont_connectes(depart=depart, arrivee=arrivee):
+                    resultat.append((depart, arrivee))
+        return resultat
+    return (genere_arretes,)
+
+
+@app.cell
+def _(genere_arretes):
+    genere_arretes()
+    return
+
+
+@app.cell
+def _():
     return
 
 
