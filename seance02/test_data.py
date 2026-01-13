@@ -58,7 +58,24 @@ def test_sont_connectes():
     )
 
 
-def test_genere_sommets(): ...
+def test_genere_sommets():
+    """Vérifie qu'on a 10 sommets 2 à 2 distincts."""
+    sommets = genere_sommets()
+    assert len(sommets) == 10
+    for i, sommet in enumerate(sommets):
+        for j, autre in enumerate(sommets):
+            assert sommet != autre or i == j
 
 
-def test_genere_arretes(): ...
+def test_genere_arretes():
+    """Présence ou pas de quelques arretes."""
+    arretes = genere_arretes()
+    assert (Etat.from_str("BLMC|"), Etat.from_str("LC|BM")) in arretes
+    assert (Etat.from_str("BLMC|"), Etat.from_str("C|BLM")) not in arretes
+
+
+def test_genere_arretes_symetrique():
+    """Vérifie que le graphe est symétrique."""
+    arretes = genere_arretes()
+    for depart, arrivee in arretes:
+        assert (arrivee, depart) in arretes
