@@ -65,8 +65,8 @@ def _():
 @app.cell
 def _(Enum):
     class Rive(Enum):
-        GAUCHE = 'gauche'
-        DROITE = 'droite'
+        GAUCHE = "gauche"
+        DROITE = "droite"
     return (Rive,)
 
 
@@ -88,7 +88,7 @@ def _(Rive, dataclass):
     class Etat:
         berger: Rive
         loup: Rive
-        mouton: Rive 
+        mouton: Rive
         choux: Rive
     return (Etat,)
 
@@ -108,7 +108,7 @@ def _(Etat):
         if etat.mouton == etat.choux and etat.berger != etat.mouton:
             return False
         return True
-    return
+    return (est_valide,)
 
 
 @app.cell
@@ -123,7 +123,56 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(Etat, Rive):
+    def genere_etats() -> list[Etat]:
+        resultat = []
+        for berger in Rive:
+            for loup in Rive:
+                for mouton in Rive:
+                    for choux in Rive:
+                        resultat.append(
+                            Etat(
+                                berger=berger,
+                                loup=loup,
+                                mouton=mouton,
+                                choux=choux,
+                            )
+                        )
+        return resultat
+    return (genere_etats,)
+
+
+@app.cell
+def _(genere_etats):
+    genere_etats()
+    return
+
+
+@app.cell
+def _(Etat, est_valide, genere_etats):
+    def genere_sommets() -> list[Etat]:
+        return [etat for etat in genere_etats() if est_valide(etat)]
+    return (genere_sommets,)
+
+
+@app.cell
+def _(genere_sommets):
+    genere_sommets()
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    **EXERCICE.**
+    Compléter l'implémentation de la fonction `sont_connectes`.
+    """)
+    return
+
+
+@app.cell
+def _(Etat):
+    def sont_connectes(depart: Etat, arrivee: Etat) -> bool: ...
     return
 
 
