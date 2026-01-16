@@ -10,7 +10,11 @@ from data import DEPART, ARRIVEE, genere_arretes, visualise_chemin
 def main():
     """Fonction principale."""
     arretes = genere_arretes()
-    print(cherche_chemin(depart=DEPART, arrivee=ARRIVEE, arretes=arretes))
+    print(
+        visualise_chemin(
+            cherche_chemin(depart=DEPART, arrivee=ARRIVEE, arretes=arretes)
+        )
+    )
 
 
 if __name__ == "__main__":

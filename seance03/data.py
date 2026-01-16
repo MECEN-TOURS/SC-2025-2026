@@ -90,7 +90,7 @@ ARRIVEE = Etat(
 )
 
 
-def est_valide(etat: Etat) -> bool:
+def _est_valide(etat: Etat) -> bool:
     """Teste si l'état respecte les contraintes sur les personnages."""
     if etat.loup == etat.mouton and etat.berger != etat.loup:
         return False
@@ -99,7 +99,7 @@ def est_valide(etat: Etat) -> bool:
     return True
 
 
-def genere_sommets() -> list[Etat]:
+def _genere_sommets() -> list[Etat]:
     """Renvoie la liste des etats valides."""
     etats = []
     for berger in Rive:
@@ -114,10 +114,10 @@ def genere_sommets() -> list[Etat]:
                             choux=choux,
                         )
                     )
-    return [etat for etat in etats if est_valide(etat)]
+    return [etat for etat in etats if _est_valide(etat)]
 
 
-def sont_connectes(depart: Etat, arrivee: Etat) -> bool:
+def _sont_connectes(depart: Etat, arrivee: Etat) -> bool:
     """Teste si on peut passer de depart à arrivee en une seule traversée de rivière."""
     if depart.berger == arrivee.berger:
         return False
@@ -143,14 +143,41 @@ def sont_connectes(depart: Etat, arrivee: Etat) -> bool:
 def genere_arretes() -> list[tuple[Etat, Etat]]:
     """Génère toutes les arrêtes du graphe."""
     resultat = []
-    for depart in genere_sommets():
-        for arrivee in genere_sommets():
-            if sont_connectes(depart=depart, arrivee=arrivee):
+    for depart in _genere_sommets():
+        for arrivee in _genere_sommets():
+            if _sont_connectes(depart=depart, arrivee=arrivee):
                 resultat.append((depart, arrivee))
     return resultat
 
 
-# Exercice implémenter la fonction
+def _affiche_mouvement(depart: Etat, arrivee: Etat) -> str:
+    """Genère l'affichage d'une traversée."""
+    caracteres = ["  "]
+    if depart.berger != arrivee.berger:
+        caracteres.append("B")
+    if depart.loup != arrivee.loup:
+        caracteres.append("L")
+    if depart.mouton != arrivee.mouton:
+        caracteres.append("M")
+    if depart.choux != arrivee.choux:
+        caracteres.append("C")
+    if depart.berger == Rive.GAUCHE:
+        caracteres.append(" ->")
+    else:
+        caracteres.append(" <-")
+    return "".join(caracteres)
+
+
 def visualise_chemin(chemin: list[Etat]) -> str:
     """Permet un meilleur affichage du résultat."""
-    ...
+    if not chemin:
+        return ""
+    lignes = list()
+    etats = iter(chemin)
+    depart = next(etats)
+    lignes.append(str(depart))
+    for arrivee in etats:
+        lignes.append(_affiche_mouvement(depart, arrivee))
+        lignes.append(str(arrivee))
+        depart = arrivee
+    return "\n".join(lignes)

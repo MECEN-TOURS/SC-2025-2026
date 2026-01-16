@@ -3,10 +3,10 @@ from data import (
     Rive,
     DEPART,
     ARRIVEE,
-    est_valide,
-    sont_connectes,
+    _est_valide,
+    _sont_connectes,
     genere_arretes,
-    genere_sommets,
+    _genere_sommets,
     visualise_chemin,
 )
 import pytest
@@ -41,27 +41,29 @@ def test_Etat_from_str_bogue():
 
 
 def test_est_valide():
-    assert est_valide(Etat.from_str("|BLMC"))
-    assert est_valide(Etat.from_str("BLMC|"))
-    assert not est_valide(Etat.from_str("LM|BC"))
+    assert _est_valide(Etat.from_str("|BLMC"))
+    assert _est_valide(Etat.from_str("BLMC|"))
+    assert not _est_valide(Etat.from_str("LM|BC"))
 
 
 def test_sont_connectes():
-    assert sont_connectes(depart=Etat.from_str("BLMC|"), arrivee=Etat.from_str("LC|BM"))
-    assert not sont_connectes(
+    assert _sont_connectes(
+        depart=Etat.from_str("BLMC|"), arrivee=Etat.from_str("LC|BM")
+    )
+    assert not _sont_connectes(
         depart=Etat.from_str("BLMC|"), arrivee=Etat.from_str("BLMC|")
     )
-    assert not sont_connectes(
+    assert not _sont_connectes(
         depart=Etat.from_str("BLMC|"), arrivee=Etat.from_str("C|BLM")
     )
-    assert not sont_connectes(
+    assert not _sont_connectes(
         depart=Etat.from_str("BL|MC"), arrivee=Etat.from_str("LMC|B")
     )
 
 
 def test_genere_sommets():
     """Vérifie qu'on a 10 sommets 2 à 2 distincts."""
-    sommets = genere_sommets()
+    sommets = _genere_sommets()
     assert len(sommets) == 10
     for i, sommet in enumerate(sommets):
         for j, autre in enumerate(sommets):
