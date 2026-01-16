@@ -82,7 +82,23 @@ def test_genere_arretes_symetrique():
         assert (arrivee, depart) in arretes
 
 
-# Implémenter les tests
 def test_visualisation():
     """Quelques valeurs de chemins."""
-    ...
+    assert visualise_chemin(chemin=[]) == ""
+    entree = [Etat.from_str("BLMC|")]
+    assert visualise_chemin(chemin=entree) == "BLMC|"
+    entree = [
+        Etat.from_str("BLMC|"),
+        Etat.from_str("LC|BM"),
+        Etat.from_str("BLC|M"),
+    ]
+    assert (
+        visualise_chemin(chemin=entree)
+        == """
+BLMC|
+  BM ->
+LC|BM
+  B <-
+BLC|M
+        """.strip()
+    )
