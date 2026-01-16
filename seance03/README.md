@@ -3,4 +3,5 @@
 - Implémentation du parcours de graphe
 - Différence DFS et BFS
 - Debug avec print
+- Debug avec pytest + pdb
 - Debug avec logging

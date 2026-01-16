@@ -3,7 +3,7 @@
 Test de la librairie graphe.
 """
 
-from graphe import sont_connectes, trouve_voisins
+from graphe import sont_connectes, trouve_voisins, cherche_chemin
 
 
 def test_trouve_voisins_bateau():
@@ -28,3 +28,15 @@ def test_parcours():
     arretes = [(1, 2), (2, 3), (3, 4), (4, 5), (4, 2), (2, 6), (6, 7)]
     assert sont_connectes(depart=1, arrivee=7, arretes=arretes)
     assert not sont_connectes(depart=2, arrivee=1, arretes=arretes)
+
+
+def test_chemin_bateau():
+    arretes = [(1, 2)]
+    assert cherche_chemin(depart=1, arrivee=2, arretes=arretes) == ...
+    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == ...
+
+
+def test_chemin():
+    arretes = [(1, 2), (2, 3), (3, 4), (4, 5), (4, 2), (2, 6), (6, 7)]
+    assert cherche_chemin(depart=1, arrivee=7, arretes=arretes) == ...
+    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == ...
