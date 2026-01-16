@@ -17,7 +17,6 @@ def sont_connectes(depart: T, arrivee: T, arretes: list[tuple[T, T]]) -> bool:
     sommet_courant = depart
     visites = [depart]
     a_visiter = trouve_voisins(depart, arretes)
-    breakpoint()
     if sommet_courant == arrivee:
         return True
     while a_visiter:
@@ -31,10 +30,19 @@ def sont_connectes(depart: T, arrivee: T, arretes: list[tuple[T, T]]) -> bool:
     return False
 
 
-## Exercice implémenter des tests pour cherche_chemin
-## Implémenter cherche_chemin
-
-
 def cherche_chemin(depart: T, arrivee: T, arretes: list[tuple[T, T]]) -> list[T]:
     """Cherche un chemin reliant depart et arrivee sont relies par un chemin d'arretes."""
-    ...
+
+    def auxiliaire(depart: T, arrivee: T, visites=list[T]) -> list[T]:
+        visites.append(depart)
+        if depart == arrivee:
+            return [depart]
+        for voisin in trouve_voisins(depart, arretes):
+            if voisin not in visites:
+                candidat = auxiliaire(depart=voisin, arrivee=arrivee, visites=visites)
+                if candidat:
+                    return [depart] + candidat
+        return []
+
+    visites: list[T] = list()
+    return auxiliaire(depart=depart, arrivee=arrivee, visites=visites)

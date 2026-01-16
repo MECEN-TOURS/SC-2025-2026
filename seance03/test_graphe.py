@@ -32,11 +32,11 @@ def test_parcours():
 
 def test_chemin_bateau():
     arretes = [(1, 2)]
-    assert cherche_chemin(depart=1, arrivee=2, arretes=arretes) == ...
-    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == ...
+    assert cherche_chemin(depart=1, arrivee=2, arretes=arretes) == [1, 2]
+    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == []
 
 
 def test_chemin():
     arretes = [(1, 2), (2, 3), (3, 4), (4, 5), (4, 2), (2, 6), (6, 7)]
-    assert cherche_chemin(depart=1, arrivee=7, arretes=arretes) == ...
-    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == ...
+    assert cherche_chemin(depart=1, arrivee=7, arretes=arretes) == [1, 2, 6, 7]
+    assert cherche_chemin(depart=2, arrivee=1, arretes=arretes) == []
