@@ -148,3 +148,9 @@ def genere_arretes() -> list[tuple[Etat, Etat]]:
             if sont_connectes(depart=depart, arrivee=arrivee):
                 resultat.append((depart, arrivee))
     return resultat
+
+
+# Exercice implémenter la fonction
+def visualise_chemin(chemin: list[Etat]) -> str:
+    """Permet un meilleur affichage du résultat."""
+    ...

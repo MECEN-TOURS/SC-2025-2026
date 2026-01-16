@@ -7,6 +7,7 @@ from data import (
     sont_connectes,
     genere_arretes,
     genere_sommets,
+    visualise_chemin,
 )
 import pytest
 
@@ -79,3 +80,9 @@ def test_genere_arretes_symetrique():
     arretes = genere_arretes()
     for depart, arrivee in arretes:
         assert (arrivee, depart) in arretes
+
+
+# Implémenter les tests
+def test_visualisation():
+    """Quelques valeurs de chemins."""
+    ...
