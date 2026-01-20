@@ -242,7 +242,7 @@ def _():
                 if sont_connectes(depart=depart, arrivee=arrivee):
                     resultat.append((depart, arrivee))
         return resultat
-    return ARRIVEE, DEPART, genere_arretes
+    return ARRIVEE, DEPART, Rive, dataclass, genere_arretes
 
 
 @app.cell
@@ -329,6 +329,74 @@ def _(mo):
 
     Résoudre le problème [suivant](https://culturemath.ens.fr/thematiques/enigmes/passer-la-riviere)
     """)
+    return
+
+
+@app.cell
+def _(Rive, dataclass):
+    @dataclass(frozen=True)
+    class Etat2:
+        b: Rive
+        m1: Rive
+        m2: Rive
+        m3: Rive
+        e1: Rive
+        e2: Rive
+        e3: Rive
+    return (Etat2,)
+
+
+@app.cell
+def _(Etat2):
+    def est_valide2(etat: Etat2) -> bool:
+        if etat.e1 != etat.m1:
+            return etat.m1 == etat.m2 and etat.m1 == etat.m3
+        if etat.e2 != etat.m2:
+            return etat.m2 == etat.m1 and etat.m2 == etat.m3
+        if etat.e3 != etat.m3:
+            return etat.m3 == etat.m1 and etat.m3 == etat.m2
+        return True
+    return (est_valide2,)
+
+
+@app.cell
+def _(Etat2, Rive, est_valide2):
+    from itertools import product
+
+
+    def genere_sommets2() -> list[Etat2]:
+        candidats = (Etat2(*p) for p in product(Rive, Rive, Rive, Rive, Rive, Rive, Rive))
+        return [candidat for candidat in candidats if est_valide2(candidat)]
+    return (genere_sommets2,)
+
+
+@app.cell
+def _(genere_sommets2):
+    genere_sommets2()
+    return
+
+
+@app.cell
+def _(Etat2):
+    def sont_connectes2(depart: Etat2, arrivee: Etat2) -> bool:
+        if depart.b == arrivee.b:
+            return False
+        ...
+    return
+
+
+@app.cell
+def _(Etat2, Rive):
+    def genere_arretes2() -> list[tuple[Etat2, Etat2]]: ...
+
+
+    DEPART2 = Etat2(*[Rive.GAUCHE for _ in range(7)])
+    ARRIVEE2 = Etat2(*[Rive.DROITE for _ in range(7)])
+    return
+
+
+@app.cell
+def _():
     return
 
 
