@@ -242,7 +242,7 @@ def _():
                 if sont_connectes(depart=depart, arrivee=arrivee):
                     resultat.append((depart, arrivee))
         return resultat
-    return (genere_arretes,)
+    return ARRIVEE, DEPART, genere_arretes
 
 
 @app.cell
@@ -261,7 +261,74 @@ def _(nx, plt, traversee):
 
 
 @app.cell
-def _():
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    1. Comment utiliser networkx pour trouver un chemin solution du problème de traversée?
+    2. Comment obtenir un dessin où le sommet de départ est en vert et le sommet d'arrivée est en rouge, les autres restant bleus.
+    3. Alternativement visualiser un chemin solution du problème.
+    """)
+    return
+
+
+@app.cell
+def _(ARRIVEE, DEPART, nx, traversee):
+    solution = nx.shortest_path(traversee, DEPART, ARRIVEE)
+    solution
+    return (solution,)
+
+
+@app.cell
+def _(nx, traversee):
+    positions = nx.spring_layout(traversee)
+    positions
+    return (positions,)
+
+
+@app.cell
+def _(ARRIVEE, DEPART, nx, plt, positions, solution, traversee):
+    _, _rep = plt.subplots()
+
+    couleurs_sommets = []
+    for sommet in traversee.nodes:
+        if sommet == DEPART:
+            couleurs_sommets.append("green")
+        elif sommet == ARRIVEE:
+            couleurs_sommets.append("red")
+        else:
+            couleurs_sommets.append("blue")
+    nx.draw_networkx_nodes(traversee, positions, node_color=couleurs_sommets, ax=_rep)
+
+    arretes_solutions = list(zip(solution, solution[1:]))
+    couleurs_arretes = []
+    for d, a in traversee.edges:
+        if (d, a) in arretes_solutions or (a, d) in arretes_solutions:
+            couleurs_arretes.append("pink")
+        else:
+            couleurs_arretes.append("black")
+    nx.draw_networkx_edges(traversee, positions, edge_color=couleurs_arretes, ax=_rep)
+
+    nx.draw_networkx_labels(
+        traversee,
+        positions,
+        labels={sommet: str(sommet) for sommet in traversee.nodes},
+        font_size=9,
+        ax=_rep,
+    )
+
+
+    _rep
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Résoudre le problème [suivant](https://culturemath.ens.fr/thematiques/enigmes/passer-la-riviere)
+    """)
     return
 
 
