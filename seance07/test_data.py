@@ -35,7 +35,24 @@ def test_validite_itineraire():
         )
 
 
-def test_itineraire_to_str():
+def test_itineraire_to_str_sans_escale():
+    it = Itineraire(
+        gare_depart="Paris Gare de Lyon",
+        gare_arrivee="Bordeaux",
+        duree=3,
+        escales=[],
+    )
+    assert (
+        str(it)
+        == """
+depart: Paris Gare de Lyon
+arrivee: Bordeaux
+duree: 3h
+""".strip()
+    )
+
+
+def test_itineraire_to_str_avec_escales():
     it = Itineraire(
         gare_depart="Paris Gare de Lyon",
         gare_arrivee="Bordeaux",
@@ -45,8 +62,8 @@ def test_itineraire_to_str():
     assert (
         str(it)
         == """
-depart: Paris Gare de Lyon 
-arrivee: Bordeaux 
+depart: Paris Gare de Lyon
+arrivee: Bordeaux
 duree: 3h
 escale: (Vendome, 1)
 escale: (Tours, 2)

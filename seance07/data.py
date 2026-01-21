@@ -23,7 +23,13 @@ class Itineraire:
         if self.duree < instant_precedent:
             raise ValueError("la duree de trajet doit être positive")
 
-    def __str__(self) -> str: ...
+    def __str__(self) -> str:
+        lignes = [
+            f"depart: {self.gare_depart}",
+            f"arrivee: {self.gare_arrivee}",
+            f"duree: {self.duree}h",
+        ]
+        return "\n".join(lignes)
 
 
 @dataclass(frozen=True)
