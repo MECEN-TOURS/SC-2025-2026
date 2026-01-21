@@ -29,8 +29,19 @@ class Itineraire:
             f"arrivee: {self.gare_arrivee}",
             f"duree: {self.duree}h",
         ]
+        for gare, duree in self.escales:
+            lignes.append(f"escale: ({gare}, {duree})")
         return "\n".join(lignes)
 
+
+it = Itineraire(
+    gare_depart="Paris Gare de Lyon",
+    gare_arrivee="Bordeaux",
+    duree=3,
+    escales=[("Vendome", 1), ("Tours", 2)],
+)
+
+str(it) -> it.__str__() -> Itineraire.__str__(it)
 
 @dataclass(frozen=True)
 class ConnexionsSNCF:
