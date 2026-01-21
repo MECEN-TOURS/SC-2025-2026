@@ -4,6 +4,7 @@ Librairie pour résoudre le problème d'itinéraire SNCF.
 """
 
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass(frozen=True)
@@ -14,5 +15,18 @@ class Itineraire:
     escales: list[tuple[str, int]]
 
     def __post_init__(self):
-        if self.duree < 0:
+        instant_precedent = 0
+        for _, instant_courant in self.escales:
+            if instant_courant < instant_precedent:
+                raise ValueError("Durées d'escales invalides")
+            instant_precedent = instant_courant
+        if self.duree < instant_precedent:
             raise ValueError("la duree de trajet doit être positive")
+
+    def __str__(self) -> str: ...
+
+
+@dataclass(frozen=True)
+class ConnexionsSNCF:
+    itineraires: list[Itineraire]
+    date: datetime
