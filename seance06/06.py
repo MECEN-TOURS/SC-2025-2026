@@ -2,6 +2,7 @@
 # dependencies = [
 #     "marimo",
 #     "matplotlib==3.10.8",
+#     "pydot==4.0.1",
 # ]
 # ///
 
@@ -138,6 +139,67 @@ def _(mo):
 
     Sauvegarder le graphe dans les deux formats ci-dessus.
     """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    **ATTENTION** pour utiliser `nx.nx_pydot` il faut installer la librairie supplémentaire `pydot`.
+    """)
+    return
+
+
+@app.cell
+def _(G, nx):
+    objet_dot = nx.nx_pydot.to_pydot(G)
+    print(objet_dot)
+    return (objet_dot,)
+
+
+@app.cell
+def _(objet_dot):
+    str(objet_dot)
+    return
+
+
+@app.cell
+def _():
+    # module de la librairie standard de python, pour interagir avec le système de fichiers
+    from pathlib import Path
+    return (Path,)
+
+
+@app.cell
+def _(Path, objet_dot):
+    chemin = Path(".") / "sauvegarde.dot"
+    chemin.write_text(str(objet_dot))
+    return (chemin,)
+
+
+@app.cell
+def _(chemin):
+    contenu_fichier = chemin.read_text()
+    print(contenu_fichier)
+    return
+
+
+@app.cell
+def _(chemin, nx):
+    G2 = nx.nx_pydot.read_dot(chemin)
+    return (G2,)
+
+
+@app.cell
+def _(G2, nx, plt, positions):
+    _, _rep = plt.subplots()
+    nx.draw_networkx_nodes(G2, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G2, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G2, pos=positions, ax=_rep)
+    nx.draw_networkx_edge_labels(
+        G2, pos=positions, edge_labels={arr: arr[2] for arr in G2.edges(data="poids")}, ax=_rep
+    )
+    _rep
     return
 
 
