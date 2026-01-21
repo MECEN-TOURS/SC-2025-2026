@@ -145,6 +145,14 @@ def _(mo):
 @app.cell
 def _(mo):
     mo.md(r"""
+    ### Format dot
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
     **ATTENTION** pour utiliser `nx.nx_pydot` il faut installer la librairie supplémentaire `pydot`.
     """)
     return
@@ -200,6 +208,82 @@ def _(G2, nx, plt, positions):
         G2, pos=positions, edge_labels={arr: arr[2] for arr in G2.edges(data="poids")}, ax=_rep
     )
     _rep
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ### Format json
+
+    Il y a trois options:
+
+    1. `node_link`
+    2. `adjacency`
+    3. `tree`
+    """)
+    return
+
+
+@app.cell
+def _(G, nx):
+    dictionnaire = nx.node_link_data(G)
+    dictionnaire
+    return (dictionnaire,)
+
+
+@app.cell
+def _():
+    import json
+    return (json,)
+
+
+@app.cell
+def _(Path, dictionnaire, json):
+    nouveau_chemin = Path(".") / "sauvegarde.json"
+    nouveau_chemin.write_text(json.dumps(dictionnaire))
+    return (nouveau_chemin,)
+
+
+@app.cell
+def _(json, nouveau_chemin, nx):
+    G3 = nx.node_link_graph(json.loads(nouveau_chemin.read_text()))
+    return (G3,)
+
+
+@app.cell
+def _(G3, nx, plt, positions):
+    _, _rep = plt.subplots()
+    nx.draw_networkx_nodes(G3, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G3, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G3, pos=positions, ax=_rep)
+    nx.draw_networkx_edge_labels(
+        G3, pos=positions, edge_labels={arr: arr[2] for arr in G3.edges(data="poids")}, ax=_rep
+    )
+    _rep
+    return
+
+
+@app.cell
+def _(G, nx):
+    # Alternative adjacency_data
+    nx.adjacency_data(G)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Développer une librairie utilisant une carte de france SNCF dans un fichier avec des durée de trajet entre les villes. Elle doit permettre d'identifier l'initinéraire le plus rapide entre deux villes.
+
+    On va
+    1. Créer un objet encodant un itinéraire de train (depart, arrivee, escales, durees...)
+    2. sérialiser cette objet vers un type de fichier
+    3. Créer une fonction convertissant cette objet en un graphe netorkx
+    4. Utiliser la fonction shortest_path pour déterminer le trajet idéal souhaité par l'utilisateur.
+    """)
     return
 
 
