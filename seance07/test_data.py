@@ -4,7 +4,8 @@ Tests unitaires du module data.py
 """
 
 import pytest
-from data import Itineraire
+from data import Itineraire, ConnexionsSNCF
+from datetime import datetime
 
 
 def test_validite_itineraire():
@@ -69,3 +70,67 @@ escale: (Vendome, 1)
 escale: (Tours, 2)
 """.strip()
     )
+
+
+def test_serialisation_itineraire():
+    it = Itineraire(
+        gare_depart="Paris Gare de Lyon",
+        gare_arrivee="Bordeaux",
+        duree=3,
+        escales=[("Vendome", 1), ("Tours", 2)],
+    )
+    assert (
+        it.model_dump_json(indent=2)
+        == """
+{
+  "gare_depart": "Paris Gare de Lyon",
+  "gare_arrivee": "Bordeaux",
+  "duree": 3,
+  "escales": [
+    [
+      "Vendome",
+      1
+    ],
+    [
+      "Tours",
+      2
+    ]
+  ]
+}
+    """.strip()
+    )
+
+
+def test_deserialisation_itineraire():
+    it = Itineraire(
+        gare_depart="Paris Gare de Lyon",
+        gare_arrivee="Bordeaux",
+        duree=3,
+        escales=[("Vendome", 1), ("Tours", 2)],
+    )
+    json = """
+{
+  "gare_depart": "Paris Gare de Lyon",
+  "gare_arrivee": "Bordeaux",
+  "duree": 3,
+  "escales": [
+    [
+      "Vendome",
+      1
+    ],
+    [
+      "Tours",
+      2
+    ]
+  ]
+}
+    """.strip()
+    assert it == Itineraire.model_validate_json(json_data=json)
+
+
+def test_instanciation_connexion_SNCF():
+    cs = ConnexionsSNCF(
+        itineraires=[],
+        date=datetime.now(),
+    )
+    assert isinstance(cs, ConnexionsSNCF)
