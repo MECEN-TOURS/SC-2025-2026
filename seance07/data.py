@@ -3,18 +3,18 @@
 Librairie pour résoudre le problème d'itinéraire SNCF.
 """
 
-from dataclasses import dataclass
+from pydantic import BaseModel, PositiveInt, model_validator
 from datetime import datetime
 
 
-@dataclass(frozen=True)
-class Itineraire:
+class Itineraire(BaseModel):
     gare_depart: str
     gare_arrivee: str
-    duree: int
-    escales: list[tuple[str, int]]
+    duree: PositiveInt
+    escales: list[tuple[str, PositiveInt]]
 
-    def __post_init__(self):
+    @model_validator(mode="after")
+    def verifie_ordre_etape(self) -> "Itineraire":
         instant_precedent = 0
         for _, instant_courant in self.escales:
             if instant_courant < instant_precedent:
@@ -22,6 +22,7 @@ class Itineraire:
             instant_precedent = instant_courant
         if self.duree < instant_precedent:
             raise ValueError("la duree de trajet doit être positive")
+        return self
 
     def __str__(self) -> str:
         lignes = [
@@ -34,16 +35,6 @@ class Itineraire:
         return "\n".join(lignes)
 
 
-it = Itineraire(
-    gare_depart="Paris Gare de Lyon",
-    gare_arrivee="Bordeaux",
-    duree=3,
-    escales=[("Vendome", 1), ("Tours", 2)],
-)
-
-str(it) -> it.__str__() -> Itineraire.__str__(it)
-
-@dataclass(frozen=True)
-class ConnexionsSNCF:
+class ConnexionsSNCF(BaseModel):
     itineraires: list[Itineraire]
     date: datetime
