@@ -78,10 +78,7 @@ def _(G, nx, plt, positions):
     nx.draw_networkx_edges(G, pos=positions, ax=_rep)
     nx.draw_networkx_labels(G, pos=positions, ax=_rep)
     nx.draw_networkx_edge_labels(
-        G, 
-        pos=positions,
-        edge_labels={arr: arr[2] for arr in G.edges(data="poids")}, 
-        ax=_rep
+        G, pos=positions, edge_labels={arr: arr[2] for arr in G.edges(data="poids")}, ax=_rep
     )
     _rep
     return
@@ -120,6 +117,27 @@ def _(G, nx):
 @app.cell
 def _(G, nx):
     nx.shortest_path(G, source="A", target="B", weight="poids")
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Sérialisation et Désérialisation
+
+    i.e. aller retour entre la mémoire vive du programme et le disque dur du pc.
+
+    On trouvera aussi les mots clefs `read/write` et `input/output`.
+
+    On consultera
+
+    1. [cette page](https://networkx.org/documentation/stable/reference/readwrite/dot.html) pour utiliser le format `dot`
+    2. [cette page](https://networkx.org/documentation/stable/reference/readwrite/json_graph.html) pour utiliser le format `json`.
+
+    ## Exercice
+
+    Sauvegarder le graphe dans les deux formats ci-dessus.
+    """)
     return
 
 
