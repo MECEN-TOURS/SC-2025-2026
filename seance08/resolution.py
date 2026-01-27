@@ -8,7 +8,22 @@ import networkx as nx
 from data import Itineraire, ConnexionsSNCF
 
 
-def construit_graphe(connexions: ConnexionsSNCF) -> nx.DiGraph: ...
+# Exercice : Coder cette fonction
+def construit_graphe(connexions: ConnexionsSNCF) -> nx.DiGraph:
+    resultat = nx.DiGraph()
+    for itineraire in connexions.itineraires:
+        debut = itineraire.gare_depart
+        instant_debut = 0
+        for fin, instant_fin in itineraire.escales:
+            resultat.add_edge(debut, fin, duree=instant_fin - instant_debut)
+            debut = fin
+            instant_debut = instant_fin
+
+        fin = itineraire.gare_arrivee
+        instant_fin = itineraire.duree
+        resultat.add_edge(debut, fin, duree=instant_fin - instant_debut)
+
+    return resultat
 
 
 def resoud(

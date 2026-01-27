@@ -64,7 +64,7 @@ def test_construction_simple(connexions_simple):
     calcule = construit_graphe(connexions=connexions_simple)
     attendu = nx.DiGraph()
     attendu.add_edge("Paris Montparnasse", "Tours", duree=1)
-    assert calcule == attendu
+    assert nx.utils.graphs_equal(calcule, attendu)
 
 
 def test_construction(connexions_moins_simple):
@@ -72,7 +72,7 @@ def test_construction(connexions_moins_simple):
     attendu = nx.DiGraph()
     attendu.add_edge("Paris Montparnasse", "Vendome", duree=1)
     attendu.add_edge("Vendome", "Tours", duree=1)
-    attendu.add_edge("Tours", "Bordeux", duree=1)
+    attendu.add_edge("Tours", "Bordeaux", duree=1)
     attendu.add_edge("Tours", "Blois", duree=1)
     attendu.add_edge("Blois", "Orleans", duree=1)
-    assert calcule == attendu
+    assert nx.utils.graphs_equal(calcule, attendu)
