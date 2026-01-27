@@ -8,7 +8,6 @@ import networkx as nx
 from data import Itineraire, ConnexionsSNCF
 
 
-# Exercice : Coder cette fonction
 def construit_graphe(connexions: ConnexionsSNCF) -> nx.DiGraph:
     resultat = nx.DiGraph()
     for itineraire in connexions.itineraires:
@@ -28,4 +27,11 @@ def construit_graphe(connexions: ConnexionsSNCF) -> nx.DiGraph:
 
 def resoud(
     connexions: ConnexionsSNCF, depart: str, arrivee: str
-) -> list[tuple[str, int]]: ...
+) -> list[tuple[str, int]]:
+    graphe = construit_graphe(connexions=connexions)
+    chemin = nx.shortest_path(G=graphe, source=depart, target=arrivee, weight="duree")
+    resultat = []
+    resultat.append((depart, 0))
+    for gauche, droite in zip(chemin[:-1], chemin[1:]):
+        resultat.append((droite, resultat[-1][1] + graphe[gauche][droite]["duree"]))
+    return resultat

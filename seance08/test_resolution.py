@@ -57,7 +57,12 @@ def test_resolution(connexions_moins_simple):
     resultat = resoud(
         connexions=connexions_moins_simple, depart="Paris Montparnasse", arrivee="Blois"
     )
-    assert resultat == [("Paris Montparnasse", 0), ("Tours", 2), ("Blois", 3)]
+    assert resultat == [
+        ("Paris Montparnasse", 0),
+        ("Vendome", 1),
+        ("Tours", 2),
+        ("Blois", 3),
+    ]
 
 
 def test_construction_simple(connexions_simple):
