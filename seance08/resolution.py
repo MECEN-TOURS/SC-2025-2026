@@ -7,4 +7,6 @@ Résolution du chemin le plus court entre deux gares connaissant un objet Connex
 from data import Itineraire, ConnexionsSNCF
 
 
-def resoud(connexions: ConnexionsSNCF, depart: str, arrivee: str) -> ...: ...
+def resoud(
+    connexions: ConnexionsSNCF, depart: str, arrivee: str
+) -> list[tuple[str, int]]: ...
