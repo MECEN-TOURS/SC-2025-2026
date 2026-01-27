@@ -22,6 +22,7 @@ Cours Supply Chain &amp; Software Engineering, M1 MECEN
 
 ## Ressources en ligne
 
+- [Introduction à uv](https://youtu.be/AMdG7IjgSPM)
 - [calmcode](https://calmcode.io/): Nombreux outils/techniques en lien avec python en vidéos.
 - [The Missing Semester](https://missing.csail.mit.edu/): Collections de cours (et vidéos d'accompagnement) du MIT sur des connaissances incontournables mais ne rentrant dans aucun cours typique!
 - [Depot github de Rich](https://github.com/Textualize/rich): Démonstration parfaite de ce que peut être un bon README.
