@@ -3,14 +3,15 @@
 Tests unitaires du module resolution
 """
 
+import pytest
 from data import ConnexionsSNCF, Itineraire
-from resolution import resoud
+from resolution import resoud, construit_graphe
 from datetime import datetime
 
 
-# Exercice: coder des tests élémentaires de la fonction resoud
-def test_resolution_simple():
-    connexions = ConnexionsSNCF(
+@pytest.fixture
+def connexions_simple():
+    return ConnexionsSNCF(
         itineraires=[
             Itineraire(
                 gare_depart="Paris Montparnasse",
@@ -21,14 +22,11 @@ def test_resolution_simple():
         ],
         date=datetime.now(),
     )
-    resultat = resoud(
-        connexions=connexions, depart="Paris Montparnasse", arrivee="Tours"
-    )
-    assert resultat == [("Paris Montparnasse", 0), ("Tours", 1)]
 
 
-def test_resolution():
-    connexions = ConnexionsSNCF(
+@pytest.fixture
+def connexions_moins_simple():
+    return ConnexionsSNCF(
         itineraires=[
             Itineraire(
                 gare_depart="Paris Montparnasse",
@@ -45,7 +43,17 @@ def test_resolution():
         ],
         date=datetime.now(),
     )
+
+
+def test_resolution_simple(connexions_simple):
     resultat = resoud(
-        connexions=connexions, depart="Paris Montparnasse", arrivee="Blois"
+        connexions=connexions_simple, depart="Paris Montparnasse", arrivee="Tours"
+    )
+    assert resultat == [("Paris Montparnasse", 0), ("Tours", 1)]
+
+
+def test_resolution(connexions_moins_simple):
+    resultat = resoud(
+        connexions=connexions_moins_simple, depart="Paris Montparnasse", arrivee="Blois"
     )
     assert resultat == [("Paris Montparnasse", 0), ("Tours", 2), ("Blois", 3)]
