@@ -3,6 +3,7 @@
 Tests unitaires du module resolution
 """
 
+import networkx as nx
 import pytest
 from data import ConnexionsSNCF, Itineraire
 from resolution import resoud, construit_graphe
@@ -57,3 +58,21 @@ def test_resolution(connexions_moins_simple):
         connexions=connexions_moins_simple, depart="Paris Montparnasse", arrivee="Blois"
     )
     assert resultat == [("Paris Montparnasse", 0), ("Tours", 2), ("Blois", 3)]
+
+
+def test_construction_simple(connexions_simple):
+    calcule = construit_graphe(connexions=connexions_simple)
+    attendu = nx.DiGraph()
+    attendu.add_edge("Paris Montparnasse", "Tours", duree=1)
+    assert calcule == attendu
+
+
+def test_construction(connexions_moins_simple):
+    calcule = construit_graphe(connexions=connexions_moins_simple)
+    attendu = nx.DiGraph()
+    attendu.add_edge("Paris Montparnasse", "Vendome", duree=1)
+    attendu.add_edge("Vendome", "Tours", duree=1)
+    attendu.add_edge("Tours", "Bordeux", duree=1)
+    attendu.add_edge("Tours", "Blois", duree=1)
+    attendu.add_edge("Blois", "Orleans", duree=1)
+    assert calcule == attendu
