@@ -14,6 +14,16 @@ def _():
 
 @app.cell
 def _(mo):
+    mo.md(r"""
+    # Exercice
+
+    Utiliser les éléments d'ui ci-dessous et les fonctions de la bibliothèque pour créer une application permettant de trouver l'itinéraire le plus court entre deux gares.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
     fichier = mo.ui.file()
     fichier
     return
@@ -21,10 +31,20 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    bouton = mo.ui.button(
-        on_click=lambda _: print("cliqué"), 
-    label="Cliquez moi"
-    )
+    menu1 = mo.ui.dropdown(options=["a", "b", "c"], value="a")
+    menu1
+    return (menu1,)
+
+
+@app.cell
+def _(menu1):
+    print(menu1.value)
+    return
+
+
+@app.cell
+def _(mo):
+    bouton = mo.ui.button(on_click=lambda _: print("cliqué"), label="Cliquez moi")
     bouton
     return
 
