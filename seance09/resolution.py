@@ -29,7 +29,12 @@ def resoud(
     connexions: ConnexionsSNCF, depart: str, arrivee: str
 ) -> list[tuple[str, int]]:
     graphe = construit_graphe(connexions=connexions)
-    chemin = nx.shortest_path(G=graphe, source=depart, target=arrivee, weight="duree")
+    try:
+        chemin = nx.shortest_path(
+            G=graphe, source=depart, target=arrivee, weight="duree"
+        )
+    except nx.NetworkXException:
+        return []
     resultat = []
     resultat.append((depart, 0))
     for gauche, droite in zip(chemin[:-1], chemin[1:]):

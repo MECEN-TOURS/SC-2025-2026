@@ -65,6 +65,13 @@ def test_resolution(connexions_moins_simple):
     ]
 
 
+def test_resolution_problematique(connexions_moins_simple):
+    resultat = resoud(
+        connexions=connexions_moins_simple, depart="Bordeaux", arrivee="Tours"
+    )
+    assert resultat == []
+
+
 def test_construction_simple(connexions_simple):
     calcule = construit_graphe(connexions=connexions_simple)
     attendu = nx.DiGraph()
