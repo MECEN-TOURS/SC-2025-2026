@@ -289,7 +289,7 @@ def _(G, nx, plt, positions, selecteur_arrete, solution):
             G,
             pos=positions,
             ax=_rep,
-            edge_color=[...],
+            edge_color=["red" if _arrete == (_debut, _fin) else "black" for _arrete in G.edges],
         )
         nx.draw_networkx_labels(G, pos=positions, ax=_rep)
         nx.draw_networkx_edge_labels(
@@ -310,8 +310,60 @@ def _(G, nx, plt, positions, selecteur_arrete, solution):
 
 
 @app.cell
-def _(selecteur_arrete):
-    selecteur_arrete.value
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Explorer les différents algorithmes de placement des sommets du graphe (i.e. `layout`)
+    """)
+    return
+
+
+@app.cell
+def _(G, nx, plt):
+    def affichage(layout, **kwargs):
+        _fig, _rep = plt.subplots()
+
+        _positions = layout(G, **kwargs)
+        _rep.set_title(layout.__name__)
+
+        nx.draw_networkx_nodes(G, pos=_positions, ax=_rep)
+        nx.draw_networkx_edges(G, pos=_positions, ax=_rep)
+        nx.draw_networkx_labels(G, pos=_positions, ax=_rep)
+        nx.draw_networkx_edge_labels(
+            G,
+            pos=_positions,
+            edge_labels={
+                (depart, arrivee): capacite
+                for (depart, arrivee, capacite) in G.edges(data="capacite")
+            },
+            ax=_rep,
+        )
+        return _rep
+    return (affichage,)
+
+
+@app.cell
+def _(affichage, nx):
+    affichage(nx.spring_layout)
+    return
+
+
+@app.cell
+def _(affichage, nx):
+    affichage(nx.drawing.layout.arf_layout)
+    return
+
+
+@app.cell
+def _(affichage, nx):
+    affichage(nx.drawing.layout.kamada_kawai_layout)
+    return
+
+
+@app.cell
+def _(affichage, nx):
+    affichage(nx.drawing.layout.bfs_layout, start="P")
     return
 
 
