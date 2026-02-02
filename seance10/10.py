@@ -46,11 +46,11 @@ def _(G):
 def _(G, nx, plt):
     _fig, _rep = plt.subplots()
 
-    positions = nx.spring_layout(G)
+    positions = nx.planar_layout(G)
 
-    nx.draw_networkx_nodes(G, pos=positions)
-    nx.draw_networkx_edges(G, pos=positions)
-    nx.draw_networkx_labels(G, pos=positions)
+    nx.draw_networkx_nodes(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G, pos=positions, ax=_rep)
     nx.draw_networkx_edge_labels(
         G,
         pos=positions,
@@ -58,9 +58,10 @@ def _(G, nx, plt):
             (depart, arrivee): capacite
             for (depart, arrivee, capacite) in G.edges(data="capacite")
         },
+        ax=_rep,
     )
     _rep
-    return
+    return (positions,)
 
 
 @app.cell
@@ -88,6 +89,229 @@ def _(mo):
 
     Explorer la documentation de `nx.algorithms.flow` et résoudre le problème.
     """)
+    return
+
+
+@app.cell
+def _(G, nx):
+    valeur_max, solution = nx.algorithms.flow.maximum_flow(
+        flowG=G,
+        _s="P",
+        _t="C",
+        capacity="capacite",
+    )
+    solution
+    return (solution,)
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Visualiser cette solution sur le graphe
+    """)
+    return
+
+
+@app.cell
+def _(G, nx, plt, positions, solution):
+    _fig, _rep = plt.subplots()
+
+    nx.draw_networkx_nodes(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=positions,
+        label_pos=0.33,
+        edge_labels={
+            (debut, arrivee): solution[debut][arrivee] for (debut, arrivee) in G.edges
+        },
+        ax=_rep,
+        font_color="green",
+    )
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=positions,
+        label_pos=0.66,
+        edge_labels={
+            (depart, arrivee): capacite
+            for (depart, arrivee, capacite) in G.edges(data="capacite")
+        },
+        ax=_rep,
+    )
+    _rep
+    return
+
+
+@app.cell
+def _(G, nx, plt, positions, solution):
+    _fig, _rep = plt.subplots()
+
+    nx.draw_networkx_nodes(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=positions,
+        verticalalignment="bottom",
+        edge_labels={
+            (debut, arrivee): solution[debut][arrivee] for (debut, arrivee) in G.edges
+        },
+        ax=_rep,
+        font_color="green",
+    )
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=positions,
+        verticalalignment="top",
+        edge_labels={
+            (depart, arrivee): capacite
+            for (depart, arrivee, capacite) in G.edges(data="capacite")
+        },
+        ax=_rep,
+    )
+    _rep
+    return
+
+
+@app.cell
+def _(G, nx, plt, positions, solution):
+    _fig, _rep = plt.subplots()
+
+    nx.draw_networkx_nodes(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edges(G, pos=positions, ax=_rep)
+    nx.draw_networkx_labels(G, pos=positions, ax=_rep)
+    nx.draw_networkx_edge_labels(
+        G,
+        pos=positions,
+        verticalalignment="top",
+        edge_labels={
+            (depart, arrivee): f"{solution[depart][arrivee]} : {capacite}"
+            for (depart, arrivee, capacite) in G.edges(data="capacite")
+        },
+        ax=_rep,
+    )
+    _rep
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    On a le budget pour effectuer des travaux afin d'augmenter la capacité maximale d'UNE arrête de 5.
+
+    Laquelle faut-il choisir?
+
+    On réfléchira à
+    - une approche proposant une exploration interactive
+    - une approche calculatoire
+    """)
+    return
+
+
+@app.cell
+def _(G, nx):
+    resultat = dict()
+    for depart, fin in G.edges:
+        ancienne_capacite = G[depart][fin]["capacite"]
+        G[depart][fin]["capacite"] = ancienne_capacite + 5
+        val_max = nx.algorithms.flow.maximum_flow_value(
+            flowG=G,
+            _s="P",
+            _t="C",
+            capacity="capacite",
+        )
+        resultat[(depart, fin)] = val_max
+        G[depart][fin]["capacite"] = ancienne_capacite
+    return (resultat,)
+
+
+@app.cell
+def _(resultat):
+    resultat
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    On constate que l'on peut soit
+    - augmenter $P \to B_4$
+    - augmenter $B_2 \to C$
+
+    On note au passage, qu'une augmentation de $1$ unité de débit maximal d'une de ces connexions permet déjà d'obtenir le flot maximal.
+    """)
+    return
+
+
+@app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Utiliser des outils de type dashboard pour explorer le même problème.
+    """)
+    return
+
+
+@app.cell
+def _(G, mo):
+    selecteur_arrete = mo.ui.dropdown(options=list(G.edges))
+    return (selecteur_arrete,)
+
+
+@app.cell
+def _(selecteur_arrete):
+    selecteur_arrete
+    return
+
+
+@app.cell
+def _(G, nx, plt, positions, selecteur_arrete, solution):
+    _fig, _rep = plt.subplots()
+    if selecteur_arrete.value is not None:
+        _debut, _fin = selecteur_arrete.value
+        backup = G[_debut][_fin]["capacite"]
+        G[_debut][_fin]["capacite"] = backup + 5
+        _sol, _val = nx.algorithms.flow.maximum_flow(
+            flowG=G,
+            _s="P",
+            _t="C",
+            capacity="capacite",
+        )
+
+        nx.draw_networkx_nodes(G, pos=positions, ax=_rep)
+        nx.draw_networkx_edges(
+            G,
+            pos=positions,
+            ax=_rep,
+            edge_color=[...],
+        )
+        nx.draw_networkx_labels(G, pos=positions, ax=_rep)
+        nx.draw_networkx_edge_labels(
+            G,
+            pos=positions,
+            verticalalignment="top",
+            edge_labels={
+                (depart, arrivee): f"{solution[depart][arrivee]} : {capacite}"
+                for (depart, arrivee, capacite) in G.edges(data="capacite")
+            },
+            ax=_rep,
+        )
+
+        G[_debut][_fin]["capacite"] = backup
+
+    _rep
+    return
+
+
+@app.cell
+def _(selecteur_arrete):
+    selecteur_arrete.value
     return
 
 
