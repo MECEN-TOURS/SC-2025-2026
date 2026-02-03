@@ -57,6 +57,18 @@ def _(mo):
 
 
 @app.cell
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    Construire deux objets pydantic pour représenter:
+    1. Une tache
+    2. Un cahier des charges
+    """)
+    return
+
+
+@app.cell
 def _():
     return
 
