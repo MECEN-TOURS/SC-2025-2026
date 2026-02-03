@@ -35,3 +35,16 @@ def test_prerequis_cahier_des_charges():
                 Tache(nom="A", duree=1.0, prerequis=["B"]),
             ]
         )
+
+
+def test_cahier_des_charges_getitem():
+    tache = Tache(nom="A", duree=1.0, prerequis=[])
+    cahier = CahierDesCharges(taches=[tache])
+    assert cahier["A"] == tache
+
+
+def test_cahier_des_charges_getitem_invalide():
+    tache = Tache(nom="A", duree=1.0, prerequis=[])
+    cahier = CahierDesCharges(taches=[tache])
+    with pytest.raises(KeyError):
+        cahier["B"]

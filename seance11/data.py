@@ -46,3 +46,10 @@ class CahierDesCharges(BaseModel):
                     msg = "Les prérequis doivent être des tâches valides"
                     raise ValueError(msg)
         return self
+
+    def __getitem__(self, nom: str) -> Tache:
+        for tache in self.taches:
+            if tache.nom == nom:
+                return tache
+        msg = "Pas de tâche avec ce nom"
+        raise KeyError(msg)
