@@ -55,7 +55,7 @@ class CahierDesCharges(BaseModel):
         raise KeyError(msg)
 
 
-class TachePlanifie(BaseModel):
+class TachePlanifiee(BaseModel):
     tache: Tache
     debut: float
     fin: float
@@ -70,4 +70,34 @@ class TachePlanifie(BaseModel):
 
 class Planning(BaseModel):
     cahier_des_charges: CahierDesCharges
-    details: list[TachePlanifie]
+    details: list[TachePlanifiee]
+
+    def __getitem__(self, nom_tache: str) -> TachePlanifiee:
+        for tache_planifiee in self.details:
+            if tache_planifiee.tache.nom == nom_tache:
+                return tache_planifiee
+        msg = f"{nom_tache} n'est pas une tâche existante"
+        raise KeyError(msg)
+
+    @model_validator(mode="after")
+    def verifie_taches_exhaustifs(self) -> Self:
+        planifies = set()
+        for tache_planifiee in self.details:
+            planifies.add(tache_planifiee.tache.nom)
+
+        for tache in self.cahier_des_charges.taches:
+            if tache.nom not in planifies:
+                msg = f"La tâche {tache.nom} n'est pas planifiée"
+                raise ValueError(msg)
+
+        return self
+
+    @model_validator(mode="after")
+    def verifie_contraintes_temporelles(self) -> Self:
+        for tache_planifiee in self.details:
+            for nom_prerequis in tache_planifiee.tache.prerequis:
+                prerequis = self[nom_prerequis]
+                if tache_planifiee.debut < prerequis.fin:
+                    msg = f"incompatibilite {tache_planifiee} et {prerequis}"
+                    raise ValueError(msg)
+        return self

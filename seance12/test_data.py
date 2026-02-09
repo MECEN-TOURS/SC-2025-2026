@@ -3,7 +3,7 @@
 Module de tests unitaires pour data.py
 """
 
-from data import Tache, CahierDesCharges, TachePlanifie, Planning
+from data import Tache, CahierDesCharges, TachePlanifiee, Planning
 from pydantic import ValidationError
 import pytest
 
@@ -21,7 +21,7 @@ def test_tache_prerequis_circulaire():
 def test_compatibilite_duree():
     a = Tache(nom="A", duree=1.0, prerequis=[])
     with pytest.raises(ValidationError):
-        TachePlanifie(tache=a, debut=0.0, fin=2.0)
+        TachePlanifiee(tache=a, debut=0.0, fin=2.0)
 
 
 def test_noms_cahier_des_charges():
@@ -56,12 +56,26 @@ def test_cahier_des_charges_getitem_invalide():
         cahier["B"]
 
 
+def test_planning_getitem():
+    """Vérifie que les contraintes tache prerequis sont vérifiées."""
+    a = Tache(nom="A", duree=1.0, prerequis=[])
+    b = Tache(nom="B", duree=2.0, prerequis=["A"])
+    cahier = CahierDesCharges(taches=[a, b])
+    ap = TachePlanifiee(tache=a, debut=0.0, fin=1.0)
+    bp = TachePlanifiee(tache=b, debut=1.0, fin=3.0)
+    planning = Planning(cahier_des_charges=cahier, details=[ap, bp])
+    assert planning["A"] == ap
+    assert planning["B"] == bp
+    with pytest.raises(KeyError):
+        planning["C"]
+
+
 def test_planning_complet():
     """Vérifie que toutes les tâches sont bien planifiées."""
     a = Tache(nom="A", duree=1.0, prerequis=[])
     b = Tache(nom="B", duree=2.0, prerequis=["A"])
     cahier = CahierDesCharges(taches=[a, b])
-    ap = TachePlanifie(tache=a, debut=0.0, fin=1.0)
+    ap = TachePlanifiee(tache=a, debut=0.0, fin=1.0)
     with pytest.raises(ValidationError):
         Planning(
             cahier_des_charges=cahier,
@@ -74,8 +88,8 @@ def test_planning_contrainte():
     a = Tache(nom="A", duree=1.0, prerequis=[])
     b = Tache(nom="B", duree=2.0, prerequis=["A"])
     cahier = CahierDesCharges(taches=[a, b])
-    ap = TachePlanifie(tache=a, debut=0.0, fin=1.0)
-    bp = TachePlanifie(tache=b, debut=0.5, fin=2.5)
+    ap = TachePlanifiee(tache=a, debut=0.0, fin=1.0)
+    bp = TachePlanifiee(tache=b, debut=0.5, fin=2.5)
     with pytest.raises(ValidationError):
         Planning(
             cahier_des_charges=cahier,
