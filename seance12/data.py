@@ -53,3 +53,21 @@ class CahierDesCharges(BaseModel):
                 return tache
         msg = "Pas de tâche avec ce nom"
         raise KeyError(msg)
+
+
+class TachePlanifie(BaseModel):
+    tache: Tache
+    debut: PositiveFloat
+    fin: PositiveFloat
+
+    @model_validator(mode="after")
+    def verifie_compatibilite_duree(self) -> Self:
+        if self.debut + self.tache.duree != self.fin:
+            msg = "Les instants de debut et fin ne sont pas compatibles avec la durée de la tâche"
+            raise ValueError(msg)
+        return self
+
+
+class Planning(BaseModel):
+    cahier_des_charges: CahierDesCharges
+    details: list[TachePlanifie]

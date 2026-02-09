@@ -3,7 +3,7 @@
 Module de tests unitaires pour data.py
 """
 
-from data import Tache, CahierDesCharges
+from data import Tache, CahierDesCharges, TachePlanifie
 from pydantic import ValidationError
 import pytest
 
@@ -16,6 +16,12 @@ def test_duree_tache():
 def test_tache_prerequis_circulaire():
     with pytest.raises(ValidationError):
         Tache(nom="A", duree=1.0, prerequis=["A", "B"])
+
+
+def test_compatibilite_duree():
+    a = Tache(nom="A", duree=1.0, prerequis=[])
+    with pytest.raises(ValidationError):
+        TachePlanifie(tache=a, debut=0.0, fin=2.0)
 
 
 def test_noms_cahier_des_charges():

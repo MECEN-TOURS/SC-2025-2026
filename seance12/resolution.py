@@ -3,7 +3,7 @@
 Résolution du problème d'ordonnancement encodé grâce à data.py
 """
 
-from data import CahierDesCharges
+from data import CahierDesCharges, Planning
 import networkx as nx
 
 
@@ -19,6 +19,12 @@ def construit_graphe(cahier: CahierDesCharges) -> nx.DiGraph:
     return resultat
 
 
-def est_soluble(cahier: CahierDesCharges) -> bool:
+def a_une_solution(cahier: CahierDesCharges) -> bool:
     """Détecte la présence de cycles."""
+    graphe = construit_graphe(cahier=cahier)
+    return nx.algorithms.is_directed_acyclic_graph(graphe)
+
+
+def resoud(cahier: CahierDesCharges) -> Planning:
+    """Résolution du problème d'ordonnancement."""
     ...

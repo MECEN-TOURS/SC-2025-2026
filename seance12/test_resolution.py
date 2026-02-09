@@ -4,7 +4,7 @@ Tests unitaires de resolution.py
 """
 
 from data import CahierDesCharges, Tache
-from resolution import construit_graphe, est_soluble
+from resolution import construit_graphe, a_une_solution
 import networkx as nx
 
 
@@ -28,7 +28,7 @@ def test_soluble():
             Tache(nom="B", duree=2.0, prerequis=["A"]),
         ]
     )
-    assert est_soluble(cahier=cahier)
+    assert a_une_solution(cahier=cahier)
 
 
 def test_non_soluble():
@@ -39,4 +39,4 @@ def test_non_soluble():
             Tache(nom="C", duree=1.0, prerequis=["A"]),
         ]
     )
-    assert not est_soluble(cahier=cahier)
+    assert not a_une_solution(cahier=cahier)
