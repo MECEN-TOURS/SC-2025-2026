@@ -42,11 +42,12 @@ def test_non_soluble():
     assert not a_une_solution(cahier=cahier)
 
 
-def test_resolution():
+def test_resolution_simple():
     a = Tache(nom="A", duree=1.0, prerequis=[])
     b = Tache(nom="B", duree=2.0, prerequis=["A"])
     cahier = CahierDesCharges(taches=[a, b])
-    ap = TachePlanifiee(tache=a, debut=1.0, fin=2.0)
-    bp = TachePlanifiee(tache=b, debut=2.0, fin=4.0)
-    planning = Planning(cahier_des_charges=cahier, details=[ap, bp])
-    assert planning == resoud_ordonnancement(cahier=cahier, debut=1.0)
+    planning = resoud_ordonnancement(cahier=cahier, debut=1.0)
+    assert planning["A"].debut == 1.0
+    assert planning["A"].fin == 2.0
+    assert planning["B"].debut == 2.0
+    assert planning["B"].fin == 4.0

@@ -31,7 +31,8 @@ def resoud_ordonnancement(cahier: CahierDesCharges, debut: float) -> Planning:
     details = list()
     if not nx.algorithms.is_directed_acyclic_graph(graphe):
         raise ValueError("Le cahier des charges n'a pas de solution!")
-    for tache in nx.algorithms.topological_sort(graphe):
+    for nom_tache in nx.algorithms.topological_sort(graphe):
+        tache = cahier[nom_tache]
         fin_prerequis = [
             tache_planifiee.fin
             for tache_planifiee in details
