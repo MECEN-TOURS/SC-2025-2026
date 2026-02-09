@@ -57,8 +57,8 @@ class CahierDesCharges(BaseModel):
 
 class TachePlanifie(BaseModel):
     tache: Tache
-    debut: PositiveFloat
-    fin: PositiveFloat
+    debut: float
+    fin: float
 
     @model_validator(mode="after")
     def verifie_compatibilite_duree(self) -> Self:

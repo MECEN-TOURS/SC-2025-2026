@@ -3,7 +3,7 @@
 Module de tests unitaires pour data.py
 """
 
-from data import Tache, CahierDesCharges, TachePlanifie
+from data import Tache, CahierDesCharges, TachePlanifie, Planning
 from pydantic import ValidationError
 import pytest
 
@@ -54,3 +54,30 @@ def test_cahier_des_charges_getitem_invalide():
     cahier = CahierDesCharges(taches=[tache])
     with pytest.raises(KeyError):
         cahier["B"]
+
+
+def test_planning_complet():
+    """Vérifie que toutes les tâches sont bien planifiées."""
+    a = Tache(nom="A", duree=1.0, prerequis=[])
+    b = Tache(nom="B", duree=2.0, prerequis=["A"])
+    cahier = CahierDesCharges(taches=[a, b])
+    ap = TachePlanifie(tache=a, debut=0.0, fin=1.0)
+    with pytest.raises(ValidationError):
+        Planning(
+            cahier_des_charges=cahier,
+            details=[ap],
+        )
+
+
+def test_planning_contrainte():
+    """Vérifie que les contraintes tache prerequis sont vérifiées."""
+    a = Tache(nom="A", duree=1.0, prerequis=[])
+    b = Tache(nom="B", duree=2.0, prerequis=["A"])
+    cahier = CahierDesCharges(taches=[a, b])
+    ap = TachePlanifie(tache=a, debut=0.0, fin=1.0)
+    bp = TachePlanifie(tache=b, debut=0.5, fin=2.5)
+    with pytest.raises(ValidationError):
+        Planning(
+            cahier_des_charges=cahier,
+            details=[ap, bp],
+        )
