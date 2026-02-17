@@ -157,15 +157,47 @@ def _(BaseModel, PositiveFloat, ProblemeTransport, Self, model_validator):
                 msg = "il doit y avoir exactement une quantité transportée par couple entrepot/client"
                 raise ValueError(msg)
             return self
-    return (SolutionTransport,)
+    return
+
+
+app._unparsable_cell(
+    r"""
+    def resolution(probleme: ProblemeTransport) -> SolutionTransport:
+        c = np.array(probleme.couts_unitaires)
+        n, m = len(probleme.entrepots), len(probleme.clients)
+        Aeq = np.fromfunction(
+            lambda (i,k): 1. if (1 <= (k - (i-1) * m) <= m) else 0., 
+            shape=(m, m * n)
+        )
+        beq = np.array(probleme.clients)
+        Aub = np.fromfunction(
+            lambda (j,k): 1. if 1 <= (1 + (k - j) // m) <=n else 0., 
+            shape=(n, n * m)
+        )
+        bub = np.array(probleme.entrepots)
+        solution_abstraite = optimize.linprog(
+            c=c, A_eq=Aeq, b_eq=beq, A_ub=Aub, b_ub=bub, bounds=(0, None)
+        )
+        ...
+    """,
+    name="_"
+)
 
 
 @app.cell
-def _(ProblemeTransport, SolutionTransport, linprog):
-    def resolution(probleme: ProblemeTransport) -> SolutionTransport:
-        ...
-        solution_abstraite = linprog(...)
-        ...
+def _(mo):
+    mo.md(r"""
+    ## Exercice
+
+    1. Extraire de `resolution` une fonction qui construit $c$, $A_{ub}$ $b_{ub}$...
+    1. Coder des tests unitaires pour vérifier le code ainsi obtenu
+    2. Finir de coder `resolution`
+    """)
+    return
+
+
+@app.cell
+def _():
     return
 
 
