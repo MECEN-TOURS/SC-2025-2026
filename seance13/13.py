@@ -1,6 +1,8 @@
 # /// script
 # dependencies = [
 #     "marimo",
+#     "numpy==2.4.2",
+#     "pydantic==2.12.5",
 #     "scipy==1.17.0",
 # ]
 # ///
@@ -14,7 +16,9 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
-    return (mo,)
+    from pydantic import BaseModel, PositiveFloat, model_validator
+    from typing import Self
+    return BaseModel, PositiveFloat, Self, mo, model_validator
 
 
 @app.cell
@@ -30,6 +34,7 @@ def _(mo):
 @app.cell
 def _():
     from scipy import optimize
+    import numpy as np
     return
 
 
@@ -115,7 +120,52 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(BaseModel, PositiveFloat, Self, model_validator):
+    class ProblemeTransport(BaseModel):
+        entrepots: list[PositiveFloat]
+        clients: list[PositiveFloat]
+        couts_unitaires: list[PositiveFloat]
+
+        @model_validator(mode="after")
+        def verifie_compatibilite(self) -> Self:
+            if len(self.entrepots) == 0:
+                msg = "Il faut au moins un entrepot"
+                raise ValueError(msg)
+            if len(self.clients) == 0:
+                msg = "Il faut au moins un client"
+                raise ValueError(msg)
+            if len(self.clients) * len(self.entrepots) != len(self.couts_unitaires):
+                msg = "il doit y avoir exactement un cout par couple entrepot/client"
+                raise ValueError(msg)
+            if sum(self.entrepots) < sum(self.clients):
+                msg = "il doit y avoir plus de quantité disponible que de demandes"
+                raise ValueError(msg)
+
+            return self
+    return (ProblemeTransport,)
+
+
+@app.cell
+def _(BaseModel, PositiveFloat, ProblemeTransport, Self, model_validator):
+    class SolutionTransport(BaseModel):
+        probleme: ProblemeTransport
+        solution: list[PositiveFloat]
+
+        @model_validator(mode="after")
+        def verifie_compatibilite(self) -> Self:
+            if len(self.solution) != len(self.probleme.couts_unitaires):
+                msg = "il doit y avoir exactement une quantité transportée par couple entrepot/client"
+                raise ValueError(msg)
+            return self
+    return (SolutionTransport,)
+
+
+@app.cell
+def _(ProblemeTransport, SolutionTransport, linprog):
+    def resolution(probleme: ProblemeTransport) -> SolutionTransport:
+        ...
+        solution_abstraite = linprog(...)
+        ...
     return
 
 
