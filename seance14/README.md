@@ -9,3 +9,5 @@
 - Utilisation de `pytest-cov` pour la couverture
 - Utilisation de `ruff` pour détecter des bogues
 - Utilisation de `ty` pour vérifier le typage
+- Utilisation de `__getitem__`
+- Utilisation de `@property`
