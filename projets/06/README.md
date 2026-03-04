@@ -1,4 +1,4 @@
-# Sujet 12
+# Sujet 06
 
 Une société de consultant doit organiser les affectations à venir d'une de ses équipes
 
